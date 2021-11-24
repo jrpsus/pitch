@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class PlayerControls : MonoBehaviour
 {
     public float speed;
+    bool isPaused = false;
     public AudioSource source;
     public AudioClip jump;
     public AudioClip dead;
@@ -60,7 +61,10 @@ public class PlayerControls : MonoBehaviour
             rb.velocity = Vector3.zero;
             source.PlayOneShot(dead);
         }
-        
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            TogglePause();
+        }
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -105,8 +109,7 @@ public class PlayerControls : MonoBehaviour
             }
             if (collision.gameObject.name == "Door 6" && collectables == 4)
             {
-                StartOver();
-                SceneManager.LoadScene("Start Menu");
+                ExitToMenu();
             }
             transform.position = spawnVector;
             rb.velocity = Vector3.zero;
@@ -133,5 +136,24 @@ public class PlayerControls : MonoBehaviour
         spawnVector.z = -4f;
         transform.position = spawnVector;
         rb.velocity = Vector3.zero;
+    }
+    public void ExitToMenu()
+    {
+        StartOver();
+        SceneManager.LoadScene("Start Menu");
+    }
+    public void TogglePause()
+    {
+        if (isPaused)
+        {
+            //unpause
+            Time.timeScale = 1.0f;
+        }
+        else
+        {
+            //pause
+            Time.timeScale = 0.0f;
+        }
+        isPaused = !isPaused;
     }
 }
